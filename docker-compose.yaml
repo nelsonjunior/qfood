@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  postgres_management:
+    container_name: postgres_management_qfood
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: qfood
+      POSTGRES_PASSWORD: qfood
+    ports:
+      - 5432:5432
