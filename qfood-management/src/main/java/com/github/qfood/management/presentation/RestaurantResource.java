@@ -5,12 +5,14 @@ import com.github.qfood.management.domain.entity.Restaurant;
 import com.github.qfood.management.exception.ServiceException;
 import com.github.qfood.management.repository.RestaurantRepository;
 import com.github.qfood.management.service.MenuService;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +20,10 @@ import java.util.stream.Collectors;
 @Path(Paths.RESTAURANTS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "restaurant")
 public class RestaurantResource {
+
+    private static final Logger LOGGER = Logger.getLogger(RestaurantResource.class);
 
     @Inject
     RestaurantRepository restaurantRepository;
@@ -27,15 +32,32 @@ public class RestaurantResource {
     MenuService menuService;
 
     @GET
-    public List<Restaurant> index() {
-        return restaurantRepository.listAll();
+    public Response getAllRestaurants() {
+        List<Restaurant> restaurants = restaurantRepository.listAll();
+        LOGGER.debug("Total number of restaurants " + restaurants);
+        return Response.ok(restaurants).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response getRestaurant(@PathParam("id") Long id) {
+        Optional<Restaurant> restaurant = restaurantRepository.findByIdOptional(id);
+        if (restaurant != null) {
+            LOGGER.debug("Found restaurant " + restaurant);
+            return Response.ok(restaurant).build();
+        } else {
+            LOGGER.debug("No hero found with id " + id);
+            return Response.noContent().build();
+        }
     }
 
     @POST
     @Transactional
-    public Response add(Restaurant dto) {
+    public Response add(Restaurant dto, @Context UriInfo uriInfo) {
         dto.persist();
-        return Response.status(Response.Status.CREATED).build();
+        UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(Long.toString(dto.id));
+        LOGGER.debug("New restaurant created with URI " + builder.build().toString());
+        return Response.created(builder.build()).build();
     }
 
     @PUT
@@ -63,6 +85,7 @@ public class RestaurantResource {
 
     @GET
     @Path("/{idRestaurant}/menus")
+    @Tag(name = "menu")
     public List<Menu> indexMenu(@PathParam("idRestaurant") Long idRestaurant) {
         try {
             return menuService.getMenusByRestaurantId(idRestaurant).collect(Collectors.toList());
@@ -74,6 +97,7 @@ public class RestaurantResource {
     @POST
     @Path("{idRestaurant}/menus")
     @Transactional
+    @Tag(name = "menu")
     public Response addMenu(@PathParam("idRestaurant") Long idRestaurant, Menu dto) {
         try {
             menuService.insert(idRestaurant, dto);
@@ -86,6 +110,7 @@ public class RestaurantResource {
     @PUT
     @Path("{idRestaurant}/menus/{id}")
     @Transactional
+    @Tag(name = "menu")
     public Response updateMenu(@PathParam("idRestaurant") Long idRestaurant, @PathParam("id") Long id, Menu dto) {
         try {
             menuService.update(idRestaurant, id, dto);
@@ -98,6 +123,7 @@ public class RestaurantResource {
     @DELETE
     @Path("{idRestaurant}/menus/{id}")
     @Transactional
+    @Tag(name = "menu")
     public void delete(@PathParam("idRestaurant") Long idRestaurant, @PathParam("id") Long id) {
         try {
             menuService.delete(idRestaurant, id);
