@@ -1,16 +1,20 @@
 package com.github.qfood.management.presentation;
 
+import com.github.qfood.management.config.validation.ConstraintViolationResponse;
 import com.github.qfood.management.domain.dto.*;
-import com.github.qfood.management.domain.entity.Menu;
 import com.github.qfood.management.domain.entity.Restaurant;
 import com.github.qfood.management.exception.ServiceException;
 import com.github.qfood.management.repository.RestaurantRepository;
 import com.github.qfood.management.service.MenuService;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -57,7 +61,9 @@ public class RestaurantResource {
 
     @POST
     @Transactional
-    public Response add(AddRestaurantDTO dto, @Context UriInfo uriInfo) {
+    @APIResponse(responseCode = "201", description = "If restaurant is successfully registered")
+    @APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationResponse.class)))
+    public Response add(@Valid AddRestaurantDTO dto, @Context UriInfo uriInfo) {
         Restaurant entity = restaurantMapper.toEntity(dto);
         entity.persist();
         UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(Long.toString(entity.id));
