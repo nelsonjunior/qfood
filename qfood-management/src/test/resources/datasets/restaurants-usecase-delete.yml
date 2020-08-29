@@ -1,0 +1,4 @@
+restaurant:
+  - ID: 55
+    NAME: "Delete Restaurant"
+    OWNER: "ID keyclock"

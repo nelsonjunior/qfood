@@ -1,7 +1,0 @@
-restaurant:
-  - ID: 123
-    NAME: "Brazilian Restaurant"
-    OWNER: "ID keyclock"
-  - ID: 234
-    NAME: "Mexican Restaurant"
-    OWNER: "ID keyclock 2"

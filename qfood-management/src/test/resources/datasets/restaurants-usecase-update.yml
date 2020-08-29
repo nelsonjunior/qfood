@@ -1,0 +1,9 @@
+restaurant:
+  - ID: 99
+    NAME: "Japan Restaurant"
+    OWNER: "ID keyclock"
+menu:
+  - NAME: Mini Chicken
+    DESCRIPTION: Mini Chicken with bacon
+    PRICE: 109.00
+    RESTAURANT_ID: 99

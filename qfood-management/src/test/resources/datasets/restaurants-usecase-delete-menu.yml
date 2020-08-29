@@ -1,0 +1,16 @@
+restaurant:
+  - ID: 555
+    NAME: "Brazilian Restaurant"
+    OWNER: "ID keyclock"
+
+menu:
+  - ID: 12
+    NAME: Mini Chicken
+    DESCRIPTION: Mini Chicken with bacon
+    PRICE: 109.00
+    RESTAURANT_ID: 555
+  - ID: 10
+    NAME: Mini Chicken
+    DESCRIPTION: Mini Chicken with bacon
+    PRICE: 109.00
+    RESTAURANT_ID: 555

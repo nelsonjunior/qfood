@@ -1,0 +1,12 @@
+restaurant:
+  - ID: 123
+    NAME: "Brazilian Restaurant"
+    OWNER: "ID keyclock"
+
+menu:
+  - ID: 1
+    NAME: Mini Chicken
+    DESCRIPTION: Mini Chicken with bacon
+    PRICE: 9.00
+    RESTAURANT_ID: 123
+
