@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "owner": "ID owner",
+  "name": "Japonese Restaurant",
+  "location": {
+    "latitude": 999.9,
+    "longitude": 999.9
+  }
+}

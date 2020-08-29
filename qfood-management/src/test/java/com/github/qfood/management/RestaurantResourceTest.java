@@ -5,7 +5,8 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.qfood.management.config.CadastroTestLifecycleManager;
-import com.github.qfood.management.domain.entity.Restaurant;
+import com.github.qfood.management.domain.dto.AddRestaurantDTO;
+import com.github.qfood.management.domain.dto.LocationDTO;
 import com.github.qfood.management.presentation.Paths;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -41,9 +42,12 @@ public class RestaurantResourceTest {
 
     @Test
     public void testInsertRestaurant() {
-        Restaurant dto = new Restaurant();
+        AddRestaurantDTO dto = new AddRestaurantDTO();
         dto.name = "Japonese Restaurant";
         dto.owner = "ID owner";
+        dto.location = new LocationDTO();
+        dto.location.latitude = 999.9;
+        dto.location.longitude = 999.9;
         String location = given()
                 .body(dto)
                 .header(CONTENT_TYPE, APPLICATION_JSON)
@@ -67,7 +71,6 @@ public class RestaurantResourceTest {
                 .statusCode(200)
                 .extract()
                 .asString();
-        assertNotNull(result);
-
+        Approvals.verifyJson(result);
     }
 }

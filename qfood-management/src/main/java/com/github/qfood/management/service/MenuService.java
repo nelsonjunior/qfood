@@ -1,5 +1,9 @@
 package com.github.qfood.management.service;
 
+import com.github.qfood.management.domain.dto.AddMenuDTO;
+import com.github.qfood.management.domain.dto.MenuDTO;
+import com.github.qfood.management.domain.dto.MenuMapper;
+import com.github.qfood.management.domain.dto.UpdateMenuDTO;
 import com.github.qfood.management.domain.entity.Menu;
 import com.github.qfood.management.domain.entity.Restaurant;
 import com.github.qfood.management.exception.ServiceException;
@@ -8,7 +12,9 @@ import com.github.qfood.management.repository.RestaurantRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
@@ -18,26 +24,32 @@ public class MenuService {
     RestaurantRepository restaurantRepository;
 
     @Inject
+    MenuMapper menuMapper;
+
+    @Inject
     MenuRepository menuRepository;
 
-    public Stream<Menu> getMenusByRestaurantId(Long idRestaurant) throws ServiceException {
-        Optional<Restaurant> restauranteEntity = restaurantRepository.findByIdOptional(idRestaurant);
-        if (restauranteEntity.isEmpty()) {
-            throw new ServiceException("Restaurant does not exist");
-        }
-        return Menu.stream("restaurant", restauranteEntity.get());
-    }
-
-    public void insert(Long idRestaurant, Menu menu) throws ServiceException {
+    public List<MenuDTO> getMenusByRestaurantId(Long idRestaurant) throws ServiceException {
         Optional<Restaurant> restaurantEntity = restaurantRepository.findByIdOptional(idRestaurant);
         if (restaurantEntity.isEmpty()) {
             throw new ServiceException("Restaurant does not exist");
         }
-        menu.restaurant = restaurantEntity.get();
-        menu.persist();
+        Stream<Menu> menus = Menu.stream("restaurant", restaurantEntity.get());
+        return menus.map(menuMapper::toDTO).collect(Collectors.toList());
     }
 
-    public void update(Long idRestaurant, Long idMenu, Menu menu) throws ServiceException {
+    public MenuDTO insert(Long idRestaurant, AddMenuDTO dto) throws ServiceException {
+        Optional<Restaurant> restaurantEntity = restaurantRepository.findByIdOptional(idRestaurant);
+        if (restaurantEntity.isEmpty()) {
+            throw new ServiceException("Restaurant does not exist");
+        }
+        Menu menu = menuMapper.toEntity(dto);
+        menu.restaurant = restaurantEntity.get();
+        menu.persist();
+        return menuMapper.toDTO(menu);
+    }
+
+    public MenuDTO update(Long idRestaurant, Long idMenu, UpdateMenuDTO dto) throws ServiceException {
         Optional<Restaurant> restaurantEntity = restaurantRepository.findByIdOptional(idRestaurant);
         if (restaurantEntity.isEmpty()) {
             throw new ServiceException("Restaurant does not exist");
@@ -47,8 +59,10 @@ public class MenuService {
         if (menuEntity.isEmpty()) {
             throw new ServiceException("Menu does not exist");
         }
-        menu.restaurant = restaurantEntity.get();
+        Menu menu = menuEntity.get();
+        menuMapper.toMenu(dto, menu);
         menu.persist();
+        return menuMapper.toDTO(menu);
     }
 
     public void delete(Long idRestaurant, Long idMenu) throws ServiceException {
