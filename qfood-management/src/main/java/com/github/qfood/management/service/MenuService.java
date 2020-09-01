@@ -9,6 +9,8 @@ import com.github.qfood.management.domain.entity.Restaurant;
 import com.github.qfood.management.exception.ServiceException;
 import com.github.qfood.management.repository.MenuRepository;
 import com.github.qfood.management.repository.RestaurantRepository;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.opentracing.Traced;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
+@Traced(operationName = "MenuService")
 public class MenuService {
 
     @Inject
@@ -29,6 +32,9 @@ public class MenuService {
     @Inject
     MenuRepository menuRepository;
 
+    @Timed(
+            name = "menu_service_getMenusByRestaurantId", displayName = "getMenusByRestaurantId"
+    )
     public List<MenuDTO> getMenusByRestaurantId(Long idRestaurant) throws ServiceException {
         Optional<Restaurant> restaurantEntity = restaurantRepository.findByIdOptional(idRestaurant);
         if (restaurantEntity.isEmpty()) {

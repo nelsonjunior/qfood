@@ -8,16 +8,21 @@ import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.github.qfood.management.config.CadastroTestLifecycleManager;
 import com.github.qfood.management.domain.dto.*;
 import com.github.qfood.management.presentation.Paths;
+import com.github.qfood.management.util.TokenUtils;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import io.restassured.specification.RequestSpecification;
 import org.approvaltests.Approvals;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response.Status;
 import java.math.BigDecimal;
 
-import static io.restassured.RestAssured.given;
 import static javax.ws.rs.core.HttpHeaders.ACCEPT;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -29,6 +34,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @QuarkusTestResource(CadastroTestLifecycleManager.class)
 public class RestaurantResourceTest {
+
+    private String token;
+
+    @BeforeEach
+    public void gereToken() throws Exception {
+        token = TokenUtils.generateTokenString("/JWTOwnerClaims.json", null);
+    }
+
+    private RequestSpecification given() {
+        return RestAssured.given()
+                .contentType(ContentType.JSON)
+                .header(new Header("Authorization", "Bearer " + token))
+                .header(new Header("accept", "*/*"));
+    }
 
     @Test
     @DataSet("restaurants-usecase-list.yml")
@@ -47,13 +66,15 @@ public class RestaurantResourceTest {
         AddRestaurantDTO dto = new AddRestaurantDTO();
         dto.name = "Japonese Restaurant";
         dto.owner = "ID owner";
+        dto.documentID = "28.193.446/0001-07";
         dto.location = new LocationDTO();
         dto.location.latitude = 999.9;
         dto.location.longitude = 999.9;
-        String location = given()
+        String location = RestAssured.given()
                 .body(dto)
                 .header(CONTENT_TYPE, APPLICATION_JSON)
                 .header(ACCEPT, APPLICATION_JSON)
+                .header(new Header("Authorization", "Bearer " + token))
                 .when().post(Paths.RESTAURANTS)
                 .then()
                 .statusCode(Status.CREATED.getStatusCode())

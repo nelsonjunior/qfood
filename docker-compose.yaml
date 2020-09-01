@@ -1,11 +1,109 @@
-version: '3.7'
+version: "3.8"
+
+volumes:
+  keycloak_db_data:
+    driver: local
+  postgres_management_db_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  backend-tier:
+
 services:
   postgres_management:
     container_name: postgres_management_qfood
     image: postgres
-    restart: always
+    volumes:
+      - postgres_management_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: qfood
       POSTGRES_PASSWORD: qfood
     ports:
       - 5432:5432
+    networks:
+      - backend-tier
+
+  keycloak_db:
+    container_name: keycloak_db
+    image: postgres
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    networks:
+      - backend-tier
+
+  keycloak_qfood:
+    container_name: keycloak_qfood
+    image: jboss/keycloak
+    restart: always
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak_db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: keycloak
+      KEYCLOAK_USER: qfood
+      KEYCLOAK_PASSWORD: qfood
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+    #      JDBC_PARAMS: "ssl=true"
+    ports:
+      - 8180:8080
+    depends_on:
+      - keycloak_db
+    networks:
+      - backend-tier
+
+  jaeger_qfood:
+    container_name: jaeger_qfood
+    image: jaegertracing/all-in-one
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+    networks:
+      - backend-tier
+
+  prometheus_qfood:
+    container_name: prometheus_qfood
+    image: prom/prometheus:v2.1.0
+    volumes:
+      - ./.Docker/prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    networks:
+      - backend-tier
+
+  grafana_qfood:
+    container_name: grafana_qfood
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - prometheus_qfood
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./.Docker/grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./.Docker/grafana/config.monitoring
+    networks:
+      - backend-tier

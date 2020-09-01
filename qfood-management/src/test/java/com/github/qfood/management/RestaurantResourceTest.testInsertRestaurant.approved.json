@@ -1,6 +1,7 @@
 {
   "id": 1,
   "owner": "ID owner",
+  "documentID": "28.193.446/0001-07",
   "name": "Japonese Restaurant",
   "location": {
     "latitude": 999.9,
