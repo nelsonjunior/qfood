@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Tag(name = "restaurant")
 @RolesAllowed("owner")
 @SecurityScheme(securitySchemeName = "qfood-oauth", type = SecuritySchemeType.OAUTH2,
-        flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8180/auth/realms/qfood/protocol/openid-connect/token")))
+        flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8181/auth/realms/qfood/protocol/openid-connect/token")))
 @SecurityRequirement(name = "qfood-oauth", scopes = {"owner"})
 public class RestaurantResource {
 
