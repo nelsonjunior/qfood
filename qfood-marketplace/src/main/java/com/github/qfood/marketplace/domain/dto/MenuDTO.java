@@ -1,6 +1,5 @@
 package com.github.qfood.marketplace.domain.dto;
 
-import com.github.qfood.marketplace.domain.entity.Restaurant;
 import io.vertx.mutiny.sqlclient.Row;
 
 import java.math.BigDecimal;

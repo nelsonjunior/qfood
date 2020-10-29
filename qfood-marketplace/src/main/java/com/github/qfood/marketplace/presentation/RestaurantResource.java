@@ -1,9 +1,8 @@
 package com.github.qfood.marketplace.presentation;
 
 import com.github.qfood.marketplace.domain.dto.MenuDTO;
-import com.github.qfood.marketplace.domain.entity.Menu;
+import com.github.qfood.marketplace.service.MenuService;
 import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.pgclient.PgPool;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -19,12 +18,12 @@ import javax.ws.rs.core.MediaType;
 public class RestaurantResource {
 
     @Inject
-    PgPool pgPool;
+    MenuService menuService;
 
     @GET
     @Path("{idRestaurant}/menus")
     public Multi<MenuDTO> findAllMenus(@PathParam("idRestaurant") Long idRestaurant) {
-        return Menu.findAll(pgPool, idRestaurant);
+        return menuService.findAllByIdRestaurant(idRestaurant);
     }
 
 }

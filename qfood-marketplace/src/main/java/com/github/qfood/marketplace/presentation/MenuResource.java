@@ -1,9 +1,12 @@
 package com.github.qfood.marketplace.presentation;
 
 import com.github.qfood.marketplace.domain.dto.MenuDTO;
-import com.github.qfood.marketplace.domain.entity.Menu;
+import com.github.qfood.marketplace.service.MenuService;
 import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.pgclient.PgPool;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -18,11 +21,15 @@ import javax.ws.rs.core.MediaType;
 public class MenuResource {
 
     @Inject
-    PgPool pgPool;
+    MenuService menuService;
 
     @GET
-    public Multi<MenuDTO> findAllMenus(){
-        return Menu.findAll(pgPool);
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = MenuDTO.class))
+    )
+    public Multi<MenuDTO> findAllMenus() {
+        return menuService.findAllByRestaurant();
     }
 
 }
