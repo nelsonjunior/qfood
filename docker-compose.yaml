@@ -5,6 +5,8 @@ volumes:
     driver: local
   postgres_management_db_data:
     driver: local
+  postgres_marketplace_db_data:
+    driver: local
   prometheus_data:
     driver: local
   grafana_data:
@@ -24,6 +26,19 @@ services:
       POSTGRES_PASSWORD: qfood
     ports:
       - 5432:5432
+    networks:
+      - backend-tier
+
+  postgres_marketplace:
+    container_name: postgres_marketplace_qfood
+    image: postgres
+    volumes:
+      - postgres_marketplace_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: qfood
+      POSTGRES_PASSWORD: qfood
+    ports:
+      - 5433:5432
     networks:
       - backend-tier
 
