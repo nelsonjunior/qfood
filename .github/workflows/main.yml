@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@master
+      - name: Run Unit Tests
+        run: mvn clean package
       - name: Build native executable
         uses: maxday/quarkus-native-build-docker-action@1
         with:
