@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
-import com.github.qfood.management.config.CadastroTestLifecycleManager;
+import com.github.qfood.management.config.ManagementTestLifecycleManager;
 import com.github.qfood.management.domain.dto.*;
 import com.github.qfood.management.presentation.Paths;
 import com.github.qfood.management.util.TokenUtils;
@@ -16,10 +16,10 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.approvaltests.Approvals;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response.Status;
 import java.math.BigDecimal;
 
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DBRider
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 @QuarkusTest
-@QuarkusTestResource(CadastroTestLifecycleManager.class)
+@QuarkusTestResource(ManagementTestLifecycleManager.class)
 public class RestaurantResourceTest {
 
     private String token;

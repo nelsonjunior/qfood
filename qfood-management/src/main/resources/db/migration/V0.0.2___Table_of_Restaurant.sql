@@ -13,5 +13,4 @@ create table restaurant
 			references location
 );
 
-alter table restaurant owner to qfood;
 

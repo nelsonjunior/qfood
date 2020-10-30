@@ -7,5 +7,4 @@ create table location
 	longitude double precision
 );
 
-alter table location owner to qfood;
 

@@ -11,5 +11,4 @@ create table menu
 			references restaurant
 );
 
-alter table menu owner to qfood;
 
