@@ -122,3 +122,15 @@ services:
       - ./.Docker/grafana/config.monitoring
     networks:
       - backend-tier
+
+  artemis:
+    image: vromero/activemq-artemis:2.15.0-alpine
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+      - "5672:5672"
+    environment:
+      ARTEMIS_USERNAME: qfood
+      ARTEMIS_PASSWORD: qfood
+    networks:
+      - backend-tier

@@ -18,10 +18,14 @@ import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.logging.Logger;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -36,7 +40,7 @@ import java.util.stream.Collectors;
 @Tag(name = "restaurant")
 @RolesAllowed("owner")
 @SecurityScheme(securitySchemeName = "qfood-oauth", type = SecuritySchemeType.OAUTH2,
-        flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8180/auth/realms/qfood/protocol/openid-connect/token")))
+        flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8181/auth/realms/qfood/protocol/openid-connect/token")))
 @SecurityRequirement(name = "qfood-oauth", scopes = {"owner"})
 public class RestaurantResource {
 
@@ -51,18 +55,22 @@ public class RestaurantResource {
     @Inject
     MenuService menuService;
 
+    @Inject
+    @Channel("restaurants")
+    Emitter<String> emitter;
+
     @GET
     @Counted(
             name = "count-all-restaurant",
             description = "Count search get all restaurants"
     )
     @Timed(
-        name = "full-timed-all-restaurant",
-        description = "Full timer of search get all restaurants"
+            name = "full-timed-all-restaurant",
+            description = "Full timer of search get all restaurants"
     )
     @SimplyTimed(
-        name = "simply-timed-all-restaurant",
-        description = "Simply timer of search get all restaurants"
+            name = "simply-timed-all-restaurant",
+            description = "Simply timer of search get all restaurants"
     )
     public Response getAllRestaurants() {
         List<Restaurant> restaurants = restaurantRepository.listAll();
@@ -91,6 +99,11 @@ public class RestaurantResource {
     public Response add(@Valid AddRestaurantDTO dto, @Context UriInfo uriInfo) {
         Restaurant entity = restaurantMapper.toEntity(dto);
         entity.persist();
+
+        Jsonb create = JsonbBuilder.create();
+        String json = create.toJson(entity);
+        emitter.send(json);
+
         UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(Long.toString(entity.id));
         LOGGER.debug("New restaurant created with URI " + builder.build().toString());
         return Response.created(builder.build()).build();
