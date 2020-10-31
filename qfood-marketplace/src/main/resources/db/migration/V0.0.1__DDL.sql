@@ -42,7 +42,7 @@ create table menu
 alter table menu owner to qfood;
 
 
-CREATE TABLE menu_user (
+CREATE TABLE menu_item (
 	menuID int,
 	userID varchar(200)
 );

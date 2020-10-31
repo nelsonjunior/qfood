@@ -134,3 +134,50 @@ services:
       ARTEMIS_PASSWORD: qfood
     networks:
       - backend-tier
+
+  mongodb_qfood:
+    container_name: mongodb_qfood
+    image: library/mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: order
+      MONGO_INITDB_ROOT_PASSWORD: order
+      MONGO_INITDB_DATABASE: order
+    networks:
+      - backend-tier
+
+  zookeeper-qfood:
+    image: confluentinc/cp-zookeeper:5.4.3
+    networks:
+      - backend-tier
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka-qfood:
+    image: confluentinc/cp-kafka:5.4.3
+    networks:
+      - backend-tier
+    depends_on:
+      - zookeeper-qfood
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-qfood:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-qfood:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafdrop-qfood:
+    image: obsidiandynamics/kafdrop:3.27.0
+    networks:
+      - backend-tier
+    depends_on:
+      - kafka-qfood
+    ports:
+      - 19000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka-qfood:29092

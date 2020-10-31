@@ -28,3 +28,21 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 You can then execute your native executable with: `./target/qfood-marketplace-1.0.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+
+
+## Test application
+
+- Add item in current cart by userID
+```
+curl -X POST "http://localhost:8081/carts/menu/9997" -H  "accept: application/json"
+```
+
+- Place order by cart
+```
+curl -X POST "http://localhost:8081/carts/place-order" -H  "accept: application/json"
+```
+
+- List menu by restaurant
+```
+curl -X GET "http://localhost:8081/restaurants/999/menus" -H  "accept: application/json"
+```
