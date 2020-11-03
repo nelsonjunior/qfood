@@ -12,6 +12,7 @@ public class Restaurant {
 
     public static Restaurant from(RestaurantDTO restaurant) {
         Restaurant entity = new Restaurant();
+        entity.id = restaurant.id;
         entity.name = restaurant.name;
         return entity;
     }

@@ -10,9 +10,4 @@ public class OrderItemDTO {
 
     public BigDecimal price;
 
-    public OrderItemDTO(String name, String description, BigDecimal price) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
 }

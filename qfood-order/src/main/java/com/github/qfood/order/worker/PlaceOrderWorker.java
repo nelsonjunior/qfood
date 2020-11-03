@@ -16,7 +16,6 @@ public class PlaceOrderWorker {
     @Incoming("orders")
     public void receiverNewPlaceOrder(PlaceOrderDTO orderDTO){
         System.out.println("#### Receiver New Place Order");
-        System.out.println(orderDTO);
 
         placeOrderService.save(orderDTO);
     }
