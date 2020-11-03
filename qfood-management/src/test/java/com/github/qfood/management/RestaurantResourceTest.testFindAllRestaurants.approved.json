@@ -1,12 +1,12 @@
 [
   {
     "id": 123,
-    "owner": "ID keyclock",
-    "name": "Brazilian Restaurant"
+    "name": "Brazilian Restaurant",
+    "owner": "ID keyclock"
   },
   {
     "id": 234,
-    "owner": "ID keyclock 2",
-    "name": "Mexican Restaurant"
+    "name": "Mexican Restaurant",
+    "owner": "ID keyclock 2"
   }
 ]

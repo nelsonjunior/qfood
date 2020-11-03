@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ManagementTestLifecycleManager implements QuarkusTestResourceLifecycleManager {
-    public static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:latest");
+    public static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:12.2-alpine");
 
     @Override
     public Map<String, String> start() {
