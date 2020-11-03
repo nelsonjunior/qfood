@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/qfood.iml" filepath="$PROJECT_DIR$/qfood.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qfood-deliveryman/qfood-deliveryman.iml" filepath="$PROJECT_DIR$/qfood-deliveryman/qfood-deliveryman.iml" />
       <module fileurl="file://$PROJECT_DIR$/qfood-management/qfood-management.iml" filepath="$PROJECT_DIR$/qfood-management/qfood-management.iml" />
       <module fileurl="file://$PROJECT_DIR$/qfood-marketplace/qfood-marketplace.iml" filepath="$PROJECT_DIR$/qfood-marketplace/qfood-marketplace.iml" />
       <module fileurl="file://$PROJECT_DIR$/qfood-order/qfood-order.iml" filepath="$PROJECT_DIR$/qfood-order/qfood-order.iml" />

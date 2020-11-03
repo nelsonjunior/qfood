@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="Quarkus" url="file://$PROJECT_DIR$/qfood-management" />
+    <file type="Quarkus" url="file://$PROJECT_DIR$/qfood-marketplace" />
+    <file type="Quarkus" url="file://$PROJECT_DIR$/qfood-order" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

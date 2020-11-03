@@ -1,0 +1,10 @@
+{
+  "name": "vertx3-hello-web",
+  "private": true,
+  "dependencies": {
+    "vertx3-full": "3.8.5"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/vertx run vertx-server.js -cluster"
+  }
+}
