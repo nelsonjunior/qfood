@@ -18,9 +18,9 @@ public class PlaceOrderService {
 
     public void save(PlaceOrderDTO placeOrderDTO){
         Order order = new Order();
-        order.user = placeOrderDTO.userID;
-        order.menus = placeOrderDTO.itens.stream().map(Menu::from).collect(Collectors.toList());
-        order.restaurant = Restaurant.from(placeOrderDTO.restaurant);
+        order.setUser(placeOrderDTO.userID);
+        order.setMenus(placeOrderDTO.itens.stream().map(Menu::from).collect(Collectors.toList()));
+        order.setRestaurant(Restaurant.from(placeOrderDTO.restaurant));
         order.persist();
 
         createIndex(placeOrderDTO);

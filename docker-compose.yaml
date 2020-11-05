@@ -214,14 +214,14 @@ services:
     networks:
       - backend-tier
 
-#  logstash:
-#    container_name: logstash
-#    image: docker.elastic.co/logstash/logstash-oss:6.8.2
-#    volumes:
-#      - source: ./pipelines
-#        target: /usr/share/logstash/pipeline
-#        type: bind
-#    networks:
-#      - backend-tier
-#    depends_on:
-#      - elastic
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash-oss:6.8.2
+    volumes:
+      - source: ./pipelines
+        target: /usr/share/logstash/pipeline
+        type: bind
+    networks:
+      - backend-tier
+    depends_on:
+      - elastic
