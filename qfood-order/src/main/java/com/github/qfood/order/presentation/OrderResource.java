@@ -3,15 +3,16 @@ package com.github.qfood.order.presentation;
 import com.github.qfood.order.domain.entity.Location;
 import com.github.qfood.order.domain.entity.Order;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.mutiny.core.eventbus.EventBus;
 import org.bson.types.ObjectId;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -62,8 +63,9 @@ public class OrderResource {
     @Path("{idOrder}/location")
     public Order newLocation(@PathParam("idOrder") String idOrder, Location location) {
         Order order = Order.findById(new ObjectId(idOrder));
-        order.location = location;
+        order.setLocation(location);
         order.persistOrUpdate();
+        eventBus.sendAndForget("newLocation", JsonbBuilder.create().toJson(location));
         return order;
     }
 }

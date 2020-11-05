@@ -32,7 +32,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="qfood" target="1.5" />
+      <module name="qfood" target="11" />
       <module name="qfood-management" target="11" />
       <module name="qfood-marketplace" target="11" />
       <module name="qfood-order" target="11" />
